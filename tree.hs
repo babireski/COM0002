@@ -4,7 +4,7 @@ data Tree a = Node a (Tree a) (Tree a) | Leaf deriving Show
 
 preorder :: Tree a -> [a]
 preorder Leaf = []
-preorder (Node x l r) = [x] ++ (inorder l) ++ (inorder r)
+preorder (Node x l r) = [x] ++ (preorder l) ++ (preorder r)
 
 inorder :: Tree a -> [a]
 inorder Leaf = []
@@ -12,4 +12,4 @@ inorder (Node x l r) = (inorder l) ++ [x] ++ (inorder r)
 
 postorder :: Tree a -> [a]
 postorder Leaf = []
-postorder (Node x l r) = (inorder l) ++ (inorder r) ++ [x]
+postorder (Node x l r) = (postorder l) ++ (postorder r) ++ [x]
