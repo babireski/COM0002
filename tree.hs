@@ -13,3 +13,7 @@ inorder (Node x l r) = (inorder l) ++ [x] ++ (inorder r)
 postorder :: Tree a -> [a]
 postorder Leaf = []
 postorder (Node x l r) = (postorder l) ++ (postorder r) ++ [x]
+
+height :: Tree a -> Int
+height Leaf = 0
+height (Node x l r) = 1 + if height l > height r then height l else height r
