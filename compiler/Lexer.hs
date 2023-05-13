@@ -11,15 +11,23 @@ definition = emptyDef
     T.commentStart    = "{-",
     T.commentEnd      = "-}",
     T.commentLine     = "--",
-    T.reservedOpNames = ["+", "-", "/", "*"]
-  }  
+    T.reservedOpNames = ["+", "-", "/", "*", "==", "/=", "<", ">", "<=", ">=", "&&", "||", "!"],
+    T.reservedNames   = ["int", "double", "string"]
+  }
 
 lexer = T.makeTokenParser definition
 
-number = T.naturalOrFloat lexer
-sym = T.symbol         lexer
+number      = T.naturalOrFloat lexer
+symbol      = T.symbol         lexer
 parentheses = T.parens         lexer
-opr = T.reservedOp     lexer
+operator    = T.reservedOp     lexer
+literal     = T.stringLiteral  lexer
+identifier  = T.identifier     lexer
+comma       = T.comma          lexer
+reserved    = T.reserved       lexer
+
+binary name fun = Infix  (do {operator name; return fun})
+prefix name fun = Prefix (do {operator name; return fun})
 
 table =
   [
@@ -28,5 +36,8 @@ table =
     [binary "+" (:+:) AssocLeft, binary "-" (:-:) AssocLeft]
   ]
 
-binary name fun = Infix  (do {opr name; return fun})
-prefix name fun = Prefix (do {opr name; return fun})
+ltable =
+  [
+    [prefix "!" Not],
+    [binary "&&" (:&:) AssocLeft, binary "||" (:|:) AssocLeft]
+  ]
