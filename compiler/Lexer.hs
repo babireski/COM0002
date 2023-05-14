@@ -11,8 +11,8 @@ definition = emptyDef
     T.commentStart    = "{-",
     T.commentEnd      = "-}",
     T.commentLine     = "--",
-    T.reservedOpNames = ["+", "-", "/", "*", "==", "/=", "<", ">", "<=", ">=", "&&", "||", "!"],
-    T.reservedNames   = ["int", "double", "string"]
+    T.reservedOpNames = ["+", "-", "/", "*", "==", "/=", "<", ">", "<=", ">=", "&&", "||", "!", "="],
+    T.reservedNames   = ["int", "double", "string", "void", "if", "else", "while", "read", "print"]
   }
 
 lexer = T.makeTokenParser definition
@@ -25,6 +25,8 @@ literal     = T.stringLiteral  lexer
 identifier  = T.identifier     lexer
 comma       = T.comma          lexer
 reserved    = T.reserved       lexer
+braces      = T.braces         lexer
+semicolon   = T.semi           lexer
 
 binary name fun = Infix  (do {operator name; return fun})
 prefix name fun = Prefix (do {operator name; return fun})
