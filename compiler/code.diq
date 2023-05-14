@@ -1,15 +1,29 @@
+int dobrar(int x)
 {
 	if(x > 0)
 	{
-		while(x < 100)
-		{
-			print(x);
-			x = x - 1;
-		}
+		return 2 * x;
 	}
 
-	else
-	{
-		print("cavalo");
-	}
+	return x;
+}
+
+string cavalo()
+{
+	string s;
+	s = "cavalo";
+	return s;
+}
+
+{
+	int a, b;
+	string ret;
+	int c;
+ 
+	a = dobrar(3);
+	b = dobrar(a);
+	ret = cavalo();
+
+
+	print(ret);
 }

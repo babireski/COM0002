@@ -22,35 +22,38 @@ relation = do {e <- expression; r <- relational; r e <$> expression;}
 lfactor = do {parentheses logic <|> Rel <$> relation}
 logic = buildExpressionParser ltable lfactor <?> "logical expression"
 
--- Parameter
-vartype = do {(reserved "int" >> return Inttype) <|> (reserved "double" >> return Inttype) <|> (reserved "string" >> return Stringtype) <?> "type"}
+-- Variables
+vartype = do {(reserved "int" >> return Inttype) <|> (reserved "double" >> return Doubletype) <|> (reserved "string" >> return Stringtype) <?> "type"}
 parameter = do {t <- vartype; i <- identifier; return (i :#: t)}
 parameters = list parameter
+declaration = do {t <- vartype; i <- list identifier; semicolon; return (map (:#: t) i)}
 
--- Function
+-- Functions
 rettype = do {vartype <|> (reserved "void" >> return Voidtype) <?> "type"}
-function = do {t <- rettype; i <- identifier; p <- parentheses parameters; return (i :->: (p, t))}
+function = do {t <- rettype; i <- identifier; p <- parentheses parameters; b <- braces varblock; return (i :->: (p, t), (i, concat (fst b), snd b))}
+functions = do {f <- many function; return (unzip f)}
+mainblock = do {b <- braces varblock; return (concat (fst b), snd b)}
 
--- Block
+-- Blocks
+varblock = do {d <- many declaration; c <- many command; return (d, c)}
 block = braces (many command)
 
--- Command
-ifcommand = do {try (do {reserved "if"; l <- parentheses logic; b <- block; reserved "else"; If l b <$> block}) <|> do {reserved "if"; l <- parentheses logic; b <- block; return (If l b  [])}}
+-- Commands
+ifcommand = try (do {reserved "if"; l <- parentheses logic; b <- block; reserved "else"; If l b <$> block}) <|> do {reserved "if"; l <- parentheses logic; b <- block; return (If l b [])}
 whilecommand = do {reserved "while"; l <- parentheses logic; While l <$> block;}
 attribution = do {i <- identifier; operator "="; e <- expression; semicolon; return (Attribution i e)}
 readcommand = do {reserved "read"; i <- parentheses identifier; semicolon; return (Read i)}
 printcommand = do {reserved "print"; e <- parentheses expression; semicolon; return (Print e)}
-command = do {ifcommand <|> whilecommand <|> attribution <|> readcommand <|> printcommand <?> "command"}
+returncommand = try (do {reserved "return"; e <- expression; semicolon; return (Return (Just e))}) <|> do {reserved "return"; semicolon; return (Return Nothing)}
+callcommand = do {i <- identifier; e <- parentheses (list expression); semicolon; return (Call i e)}
+attriborcall = try attribution <|> callcommand
+command = do {ifcommand <|> whilecommand <|> attriborcall <|> readcommand <|> printcommand <|> returncommand <?> "command"}
 
--- Run
+-- Program
+program = do {f <- functions; m <- mainblock; return (Program (fst f) (snd f) (fst m) (snd m))}
+-- program = do {f <- functions; uncurry (uncurry Program f) <$> mainblock;}
 
-run = do {e <- block; eof; return e}
-
-parser string = case runParser run [] "Expressions" string of
-  Left error -> print error
-  Right x    -> print x
-
-main =
-  do
-    e <- readFile "code.diq"
-    parser e
+-- Main
+run = do {e <- program; eof; return e}
+parser string = case runParser run [] "Expressions" string of Left error -> print error; Right x -> print x
+main = do {e <- readFile "test.diq"; parser e}

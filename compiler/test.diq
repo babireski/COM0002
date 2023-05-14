@@ -1,0 +1,47 @@
+int vec (int s, double zzzz)
+{
+    int x;int y, z;
+    double o;
+    string s;
+    return;
+}
+void vazio()
+{}
+int id(int x)
+{
+    while(escolha == 1)
+    {
+        if(2 == 3 && 3 == 5)
+        {
+            return;
+        }
+        else
+        {
+            read (d);
+        }
+    return;
+    }
+}
+
+{
+    double escolha;
+    escolha = 1;
+    while(escolha == 1)
+    {
+        if(2 == 3 && 3 == 5)
+        {
+            return -2;
+        }
+        else
+        {
+            
+        }
+        if(a == b){
+            print(vec(5,7));}
+        print(soma);
+        fatorial(x,y,z);
+        a = 3;
+        a = "teste";
+    }
+    return 3; 
+}

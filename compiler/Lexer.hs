@@ -12,7 +12,7 @@ definition = emptyDef
     T.commentEnd      = "-}",
     T.commentLine     = "--",
     T.reservedOpNames = ["+", "-", "/", "*", "==", "/=", "<", ">", "<=", ">=", "&&", "||", "!", "="],
-    T.reservedNames   = ["int", "double", "string", "void", "if", "else", "while", "read", "print"]
+    T.reservedNames   = ["int", "double", "string", "void", "if", "else", "while", "read", "print", "return"]
   }
 
 lexer = T.makeTokenParser definition
